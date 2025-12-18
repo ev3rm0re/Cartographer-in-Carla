@@ -12,7 +12,7 @@ options = {
   odom_frame = "odom",            -- 里程计坐标系
   
   -- 关键配置：里程计模式
-  provide_odom_frame = true,
+  provide_odom_frame = false,
   
   publish_frame_projected_to_2d = false,
   use_pose_extrapolator = true,   -- 使用位姿外推器平滑输出
@@ -54,7 +54,7 @@ TRAJECTORY_BUILDER_2D.max_z = 3.5
 
 -- IMU 配置
 -- 在仿真环境中，如果 IMU 噪声过大或未正确校准，建议禁用
-TRAJECTORY_BUILDER_2D.use_imu_data = false
+TRAJECTORY_BUILDER_2D.use_imu_data = true
 
 -- 扫描匹配配置
 TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true

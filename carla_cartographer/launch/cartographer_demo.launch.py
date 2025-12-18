@@ -37,33 +37,9 @@ def generate_launch_description():
     rviz_config = os.path.join(carla_cartographer_dir, 'config', 'demo_2d.rviz')
 
     # ========================================================================
-    # 3. 静态 TF 发布
+    # 3. CARLA 节点
     # ========================================================================
-    lidar_tf_publisher = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='lidar_tf_publisher',
-        arguments=['0', '0', '2.4', '0', '0', '0', 'ego_vehicle', 'ego_vehicle/lidar'],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-
-    imu_tf_publisher = Node(
-        package='tf2_ros', executable='static_transform_publisher',
-        name='imu_tf_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'ego_vehicle', 'ego_vehicle/imu'],
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-
-    # map_to_odom_publisher = Node(
-    #     package='tf2_ros', executable='static_transform_publisher',
-    #     name='map_to_odom_publisher',
-    #     arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'],
-    #     parameters=[{'use_sim_time': use_sim_time}]
-    # )
-
-    # ========================================================================
-    # 4. CARLA 节点
-    # ========================================================================
-    carla_ros_bridge_launch_desc = IncludeLaunchDescription(
+    carla_ros_bridge_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(carla_ros_bridge_dir, 'carla_ros_bridge.launch.py')
         ),
@@ -72,14 +48,6 @@ def generate_launch_description():
             'fixed_delta_seconds': '0.05',
             'ego_vehicle_role_name': 'ego_vehicle'
         }.items()
-    )
-    
-    carla_ros_bridge_launch = GroupAction(
-        actions=[
-            SetRemap(src='/tf', dst='/tf_ignored'),
-            SetRemap(src='/tf_static', dst='/tf_static_ignored'),
-            carla_ros_bridge_launch_desc
-        ]
     )
 
     # 动态选择 JSON 文件
@@ -114,6 +82,7 @@ def generate_launch_description():
         launch_arguments={'role_name': 'ego_vehicle'}.items()
     )
     
+    # OdomToTF: 负责发布 odom -> ego_vehicle 的 TF
     odom_to_tf_node = Node(
         package='carla_cartographer',
         executable='odom_to_tf.py',
@@ -132,7 +101,7 @@ def generate_launch_description():
     )
 
     # ========================================================================
-    # 5. Cartographer & RViz
+    # 4. Cartographer & RViz
     # ========================================================================
     cartographer_node = Node(
         package='cartographer_ros',
@@ -182,7 +151,7 @@ def generate_launch_description():
     )
     
     # ========================================================================
-    # 6. 返回 Launch 描述
+    # 5. 返回 Launch 描述
     # ========================================================================
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true'),
@@ -191,10 +160,6 @@ def generate_launch_description():
         DeclareLaunchArgument('map_resolution', default_value='0.05'),
         
         carla_ros_bridge_launch,
-        lidar_tf_publisher,
-        imu_tf_publisher,
-        # map_to_odom_publisher,
-        
         carla_spawn_objects_node,
         carla_set_initial_pose_launch,
         carla_manual_control_launch,

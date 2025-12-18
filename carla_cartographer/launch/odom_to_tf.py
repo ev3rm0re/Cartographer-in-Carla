@@ -52,7 +52,7 @@ class OdomToTF(Node):
         t = TransformStamped()
         t.header.stamp = msg.header.stamp
         t.header.frame_id = 'odom'
-        t.child_frame_id = 'ego_vehicle' # 对应 carla_2d.lua 中的 tracking_frame
+        t.child_frame_id = 'ego_vehicle'
 
         # 直接使用里程计中的位姿数据
         t.transform.translation.x = msg.pose.pose.position.x
@@ -63,7 +63,6 @@ class OdomToTF(Node):
         self.tf_broadcaster.sendTransform(t)
 
         # 2. 发布修正后的里程计消息
-        # 深拷贝以避免修改原始消息（虽然这里原始消息不再使用，但为了安全）
         new_msg = copy.deepcopy(msg)
         
         # 修改坐标系 ID 以匹配 TF 树
