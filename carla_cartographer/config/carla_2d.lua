@@ -12,10 +12,7 @@ options = {
   odom_frame = "odom",            -- 里程计坐标系
   
   -- 关键配置：里程计模式
-  -- 设置为 false，因为我们使用 CARLA 的绝对真值作为里程计，
-  -- 并通过外部 static_transform_publisher 发布 map -> odom 的恒等变换。
-  -- 这样可以避免 Cartographer 试图修正本就准确的 CARLA 坐标，导致坐标系漂移。
-  provide_odom_frame = false,
+  provide_odom_frame = true,
   
   publish_frame_projected_to_2d = false,
   use_pose_extrapolator = true,   -- 使用位姿外推器平滑输出

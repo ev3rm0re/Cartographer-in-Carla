@@ -13,7 +13,10 @@ ament_export_dependencies(rclpy)
 
 install(DIRECTORY config/ DESTINATION share/${PROJECT_NAME}/config)
 install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME})
-install(PROGRAMS launch/odom_to_tf.py DESTINATION lib/${PROJECT_NAME})
+install(PROGRAMS
+  launch/odom_to_tf.py
+  launch/c2_monitor_node.py
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
