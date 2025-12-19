@@ -14,12 +14,6 @@ def generate_launch_description():
     town = LaunchConfiguration('town', default='Town05')
     map_resolution = LaunchConfiguration('map_resolution', default='0.05')
     
-    # C2 开关参数 (定义声明对象)
-    enable_c2_arg = DeclareLaunchArgument(
-        'enable_c2', default_value='true',
-        description='Set to true for Run-1 (Clean), false for Run-3 (Noisy)'
-    )
-    
     # ========================================================================
     # 2. 路径获取
     # ========================================================================
@@ -90,15 +84,6 @@ def generate_launch_description():
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
     )
-    
-    # C2 监测节点
-    c2_monitor_node = Node(
-        package='carla_cartographer',
-        executable='c2_monitor_node.py',
-        name='c2_monitor_node',
-        output='screen',
-        parameters=[{'enable_c2': LaunchConfiguration('enable_c2')}]
-    )
 
     # ========================================================================
     # 4. Cartographer & RViz
@@ -155,7 +140,6 @@ def generate_launch_description():
     # ========================================================================
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true'),
-        enable_c2_arg,
         DeclareLaunchArgument('town', default_value='Town05'),
         DeclareLaunchArgument('map_resolution', default_value='0.05'),
         
@@ -163,9 +147,6 @@ def generate_launch_description():
         carla_spawn_objects_node,
         carla_set_initial_pose_launch,
         carla_manual_control_launch,
-        
         odom_to_tf_node,
-        c2_monitor_node,
-        
         delayed_cartographer_launch,
     ])

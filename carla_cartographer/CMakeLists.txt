@@ -15,7 +15,6 @@ install(DIRECTORY config/ DESTINATION share/${PROJECT_NAME}/config)
 install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME})
 install(PROGRAMS
   launch/odom_to_tf.py
-  launch/c2_monitor_node.py
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
